@@ -1,6 +1,11 @@
 package com.hasan.PollApp.service;
 
-import org.springframework.stereotype.Service;
+import com.hasan.PollApp.model.dao.UserEntity;
+import com.hasan.PollApp.model.dto.UserDto;
 
-public interface UserService {
+public interface UserService{
+    UserEntity get(Long id);
+    UserEntity add(UserDto userDto);
+    void addTitle(Long id, String name);
+    void removeTitle(Long id, String name);
 }

@@ -1,12 +1,16 @@
 package com.hasan.PollApp.model.dto;
 
 import java.util.List;
+import java.util.Set;
 
 public class PollDto {
     private String title;
+    private String type;
+    private Integer maxSelectionCount;
     private List<String> options;
     private Long ownerId;
     private Long companyId;
+    private Set<Long> voterIdList;
 
     public PollDto() {
     }
@@ -17,6 +21,22 @@ public class PollDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Integer getMaxSelectionCount() {
+        return maxSelectionCount;
+    }
+
+    public void setMaxSelectionCount(Integer maxSelectionCount) {
+        this.maxSelectionCount = maxSelectionCount;
     }
 
     public List<String> getOptions() {
@@ -41,5 +61,13 @@ public class PollDto {
 
     public void setCompanyId(Long companyId) {
         this.companyId = companyId;
+    }
+
+    public Set<Long> getVoterIdList() {
+        return voterIdList;
+    }
+
+    public void setVoterIdList(Set<Long> voterIdList) {
+        this.voterIdList = voterIdList;
     }
 }

@@ -1,11 +1,15 @@
 package com.hasan.PollApp.model.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hasan.PollApp.model.dto.UserDto;
+
 import javax.persistence.*;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 public class UserEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private String name;
@@ -18,17 +22,36 @@ public class UserEntity {
     @Column
     private String email;
     @Column
-    private Long companyId;
-    @OneToOne
+    private String password;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    @JsonIgnore
+    private CompanyEntity company;
+    private String companyName;
+    @ManyToMany
     @JoinTable(
-            name = "users_and_roles",
+            name = "users_and_titles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+            inverseJoinColumns = @JoinColumn(name = "title_id", referencedColumnName = "id")
     )
-    private RoleEntity role;
+    private List<TitleEntity> titles;
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private Set<PollEntity> polls;
 
 
     public UserEntity() {
+    }
+
+    public UserEntity(UserDto userDto){
+        this.name = userDto.getName();
+        this.surname = userDto.getSurname();
+        this.birthDate = userDto.getBirthDate();
+        this.phoneNumber = userDto.getPhoneNumber();
+        this.email = userDto.getEmail();
+        this.password = userDto.getPassword();
+        this.titles = new LinkedList<TitleEntity>();
+        this.polls = new HashSet<PollEntity>();
     }
 
     public Long getId() {
@@ -79,19 +102,43 @@ public class UserEntity {
         this.email = email;
     }
 
-    public Long getCompanyId() {
-        return companyId;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public RoleEntity getRole() {
-        return role;
+    public CompanyEntity getCompany() {
+        return company;
     }
 
-    public void setRole(RoleEntity role) {
-        this.role = role;
+    public void setCompany(CompanyEntity company) {
+        this.company = company;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public List<TitleEntity> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<TitleEntity> titles) {
+        this.titles = titles;
+    }
+
+    public Set<PollEntity> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(Set<PollEntity> polls) {
+        this.polls = polls;
     }
 }

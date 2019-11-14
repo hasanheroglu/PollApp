@@ -3,8 +3,10 @@ package com.hasan.PollApp.model.dao;
 import com.hasan.PollApp.model.dto.CompanyDto;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class CompanyEntity {
@@ -14,27 +16,23 @@ public class CompanyEntity {
     @Column
     private String name;
     @Column
-    @OneToMany
-    @JoinTable(
-            name = "companies_and_users",
-            joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private String description;
+    @OneToMany(
+            mappedBy = "company",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<UserEntity> users;
-    @Column
-    @OneToMany
-    @JoinTable(
-            name = "companies_and_roles",
-            joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    @OneToMany(
+            mappedBy = "company",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
-    private List<RoleEntity> roles;
-    @Column
-    @OneToMany
-    @JoinTable(
-            name = "companies_and_polls",
-            joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "poll_id", referencedColumnName = "id")
+    private Set<TitleEntity> titles;
+    @OneToMany(
+            mappedBy = "company",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<PollEntity> polls;
 
@@ -43,8 +41,9 @@ public class CompanyEntity {
 
     public CompanyEntity(CompanyDto companyDto){
         this.name = companyDto.getName();
+        this.description = companyDto.getDescription();
         this.users = new LinkedList<UserEntity>();
-        this.roles = new LinkedList<RoleEntity>();
+        this.titles = new HashSet<TitleEntity>();
         this.polls = new LinkedList<PollEntity>();
     }
 
@@ -64,6 +63,14 @@ public class CompanyEntity {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<UserEntity> getUsers() {
         return users;
     }
@@ -72,12 +79,12 @@ public class CompanyEntity {
         this.users = users;
     }
 
-    public List<RoleEntity> getRoles() {
-        return roles;
+    public Set<TitleEntity> getTitles() {
+        return titles;
     }
 
-    public void setRoles(List<RoleEntity> roles) {
-        this.roles = roles;
+    public void setTitles(Set<TitleEntity> titles) {
+        this.titles = titles;
     }
 
     public List<PollEntity> getPolls() {

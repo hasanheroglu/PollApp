@@ -1,9 +1,13 @@
 package com.hasan.PollApp.model.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hasan.PollApp.model.dto.PollDto;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class PollEntity {
@@ -13,27 +17,41 @@ public class PollEntity {
     @Column
     private String title;
     @Column
+    private String type;
+    @Column
+    private Integer maxSelectionCount;
+    @Column
     private Integer entryCount;
-    @Column
-    private Integer optionCount;
-    @Column
-    @Embedded
-    private List<String> options;
-    @Column
-    @Embedded
-    private List<Integer> results;
+    @OneToMany(
+            mappedBy = "poll",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OptionEntity> options;
     @Column
     private Long ownerId;
-    @Column
-    private Long companyId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    @JsonIgnore
+    private CompanyEntity company;
+    @ManyToMany
+    @JoinTable(
+            name = "polls_and_users",
+            joinColumns = @JoinColumn(name = "poll_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private Set<UserEntity> users;
 
     public PollEntity() {
     }
 
     public PollEntity(PollDto pollDto){
         this.title = pollDto.getTitle();
-        this.ownerId = pollDto.getOwnerId();
-        this.companyId = pollDto.getCompanyId();
+        this.type = pollDto.getType();
+        this.options = new LinkedList<OptionEntity>();
+        this.users = new HashSet<UserEntity>();
+        this.entryCount = 0;
+        this.maxSelectionCount = pollDto.getMaxSelectionCount();
     }
 
     public Long getId() {
@@ -52,6 +70,22 @@ public class PollEntity {
         this.title = title;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Integer getMaxSelectionCount() {
+        return maxSelectionCount;
+    }
+
+    public void setMaxSelectionCount(Integer maxSelectionCount) {
+        this.maxSelectionCount = maxSelectionCount;
+    }
+
     public Integer getEntryCount() {
         return entryCount;
     }
@@ -60,28 +94,12 @@ public class PollEntity {
         this.entryCount = entryCount;
     }
 
-    public Integer getOptionCount() {
-        return optionCount;
-    }
-
-    public void setOptionCount(Integer optionCount) {
-        this.optionCount = optionCount;
-    }
-
-    public List<String> getOptions() {
+    public List<OptionEntity> getOptions() {
         return options;
     }
 
-    public void setOptions(List<String> options) {
+    public void setOptions(List<OptionEntity> options) {
         this.options = options;
-    }
-
-    public List<Integer> getResults() {
-        return results;
-    }
-
-    public void setResults(List<Integer> results) {
-        this.results = results;
     }
 
     public Long getOwnerId() {
@@ -92,11 +110,19 @@ public class PollEntity {
         this.ownerId = ownerId;
     }
 
-    public Long getCompanyId() {
-        return companyId;
+    public CompanyEntity getCompany() {
+        return company;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+    public void setCompany(CompanyEntity company) {
+        this.company = company;
+    }
+
+    public Set<UserEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<UserEntity> users) {
+        this.users = users;
     }
 }
