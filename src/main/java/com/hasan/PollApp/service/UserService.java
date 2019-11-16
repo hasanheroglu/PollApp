@@ -3,6 +3,8 @@ package com.hasan.PollApp.service;
 import com.hasan.PollApp.model.dao.UserEntity;
 import com.hasan.PollApp.model.dto.UserDto;
 
+import java.util.List;
+
 public interface UserService{
     UserEntity get(Long id);
     UserEntity add(UserDto userDto);

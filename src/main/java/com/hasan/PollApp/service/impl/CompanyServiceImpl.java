@@ -17,6 +17,7 @@ import com.hasan.PollApp.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -94,6 +95,24 @@ public class CompanyServiceImpl implements CompanyService {
         //if(company == null) { return something bad!}
 
         return company.getUsers();
+    }
+
+    @Override
+    public List<UserEntity> listUsersByTitle(String companyName, String title) {
+        CompanyEntity company = companyRepository.findByName(companyName);
+
+        //if(company == null) { return something bad!}
+
+        List<UserEntity> usersWithTitle = new LinkedList<UserEntity>();
+        for (UserEntity user: company.getUsers()) {
+            for(TitleEntity titleEntity: user.getTitles()){
+                if(titleEntity.getTitle().equals(title)){
+                    usersWithTitle.add(user);
+                }
+            }
+        }
+
+        return usersWithTitle;
     }
 
     @Override

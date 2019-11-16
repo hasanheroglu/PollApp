@@ -20,8 +20,10 @@ public interface CompanyService {
     void addPoll(String companyName, PollEntity poll);
     PollEntity getPoll(String companyName, int pollIndex);
     List<UserEntity> listUsers(String companyName);
+    List<UserEntity> listUsersByTitle(String companyName, String title);
     void addUser(String companyName, UserDto userDto);
     void removeUser(String companyName, Long userId);
     Set<TitleEntity> listTitles(String companyName);
     void addTitle(String companyName, TitleDto titleDto);
+
 }

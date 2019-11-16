@@ -83,6 +83,12 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.listUsers(companyName));
     }
 
+    @GetMapping("/{companyName}/{title}/users")
+    public ResponseEntity<?> listUsersByTitle(@PathVariable("companyName") String companyName, @PathVariable("title") String title){
+        return ResponseEntity.ok(companyService.listUsersByTitle(companyName, title));
+    }
+
+
     @PostMapping("/{companyName}/users")
     public ResponseEntity<?> addUser(@PathVariable("companyName") String companyName, @RequestBody UserDto userDto){
         companyService.addUser(companyName, userDto);
