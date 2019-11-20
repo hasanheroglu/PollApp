@@ -1,9 +1,7 @@
 package com.hasan.PollApp.service.impl;
 
-import com.hasan.PollApp.model.dao.CompanyEntity;
-import com.hasan.PollApp.model.dao.OptionEntity;
-import com.hasan.PollApp.model.dao.PollEntity;
-import com.hasan.PollApp.model.dao.UserEntity;
+import com.hasan.PollApp.mail.EmailServiceImpl;
+import com.hasan.PollApp.model.dao.*;
 import com.hasan.PollApp.model.dto.PollDto;
 import com.hasan.PollApp.model.dto.VoteDto;
 import com.hasan.PollApp.model.repo.CompanyRepository;
@@ -29,6 +27,8 @@ public class PollServiceImpl implements PollService {
     private OptionRepository optionRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailServiceImpl emailService;
 
     @Override
     public Iterable<PollEntity> getAll(String companyName) {
@@ -78,6 +78,16 @@ public class PollServiceImpl implements PollService {
         company.getPolls().add(poll);
 
         companyRepository.save(company);
+
+        for(UserEntity user: poll.getUsers()){
+            for(AccessibilityEntity accessibilityOption: user.getAccessibilityOptions()){
+                if(accessibilityOption.getType().equals("email")){
+                    emailService.sendSimpleMessage(accessibilityOption.getContent(), "New Poll: " + poll.getTitle()  + " Added!", "Dear " + user.getName() + " " + user.getSurname()  + ",\nNew poll added and you are invited to vote. " +
+                            "Using accessibility option now!\n Start Date: " + poll.getStartDate() + "\nEnd Date: " + poll.getEndDate() + "\nPlease do not forget to vote before the end date ^^. I hope this time dates are not null." );
+                }
+            }
+        }
+
         return poll;
     }
 

@@ -1,6 +1,11 @@
 package com.hasan.PollApp.model.dto;
 
+import com.hasan.PollApp.model.dao.AccessibilityEntity;
+import com.hasan.PollApp.model.dao.RoleEntity;
+import com.hasan.PollApp.model.dao.TitleEntity;
+
 import java.util.Date;
+import java.util.List;
 
 public class UserDto {
     private String name;
@@ -10,6 +15,9 @@ public class UserDto {
     private String email;
     private String password;
     private String passwordConfirmation;
+    private List<RoleEntity> roles;
+    private List<TitleEntity> titles;
+    private List<AccessibilityEntity> accessibilityOptions;
 
     public UserDto() {
     }
@@ -68,5 +76,29 @@ public class UserDto {
 
     public void setPasswordConfirmation(String passwordConfirmation) {
         this.passwordConfirmation = passwordConfirmation;
+    }
+
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    public List<TitleEntity> getTitles() {
+        return titles;
+    }
+
+    public void setTitles(List<TitleEntity> titles) {
+        this.titles = titles;
+    }
+
+    public List<AccessibilityEntity> getAccessibilityOptions() {
+        return accessibilityOptions;
+    }
+
+    public void setAccessibilityOptions(List<AccessibilityEntity> accessibilityOptions) {
+        this.accessibilityOptions = accessibilityOptions;
     }
 }

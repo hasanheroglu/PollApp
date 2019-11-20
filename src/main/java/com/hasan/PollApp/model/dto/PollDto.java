@@ -1,5 +1,6 @@
 package com.hasan.PollApp.model.dto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,8 @@ public class PollDto {
     private List<String> options;
     private Long ownerId;
     private Long companyId;
+    private Date startDate;
+    private Date endDate;
     private Set<Long> voterIdList;
 
     public PollDto() {
@@ -69,5 +72,21 @@ public class PollDto {
 
     public void setVoterIdList(Set<Long> voterIdList) {
         this.voterIdList = voterIdList;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

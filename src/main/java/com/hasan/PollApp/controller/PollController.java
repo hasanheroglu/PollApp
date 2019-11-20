@@ -6,6 +6,7 @@ import com.hasan.PollApp.model.dto.VoteDto;
 import com.hasan.PollApp.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -16,29 +17,34 @@ public class PollController {
     private PollService pollService;
 
     @GetMapping("/polls")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMIN', 'ROLE_COMPANY_ADMIN')")
     public ResponseEntity<?> listPolls(@PathVariable("companyName") String companyName){
         return ResponseEntity.ok(pollService.getAll(companyName));
     }
 
     @PostMapping("/polls")
+    @PreAuthorize("hasAuthority('ROLE_POLL_OWNER')")
     public ResponseEntity<?> addPoll(@PathVariable("companyName") String companyName, @RequestBody PollDto pollDto){
         PollEntity poll = pollService.add(companyName, pollDto);
         return ResponseEntity.ok(poll);
     }
 
     @GetMapping("/polls/{pollId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<?> getPoll(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId){
         PollEntity poll = pollService.get(pollId);
         return ResponseEntity.ok(poll);
     }
 
     @PostMapping("/polls/{pollId}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<?> vote(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId, @RequestBody VoteDto voteDto){
         pollService.vote(voteDto);
         return ResponseEntity.ok(voteDto);
     }
 
     @PostMapping("/polls/{pollIndex}/options")
+    @PreAuthorize("hasAuthority('ROLE_POLL_OWNER')")
     public ResponseEntity<?> addOption(@PathVariable("companyName") String companyName, @PathVariable("pollIndex") Long pollId, @RequestBody String optionBody){
         pollService.addOption(pollId, optionBody);
         return ResponseEntity.ok(optionBody);

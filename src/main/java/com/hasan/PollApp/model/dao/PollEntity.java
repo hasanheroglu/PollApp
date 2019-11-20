@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hasan.PollApp.model.dto.PollDto;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class PollEntity {
@@ -20,6 +17,10 @@ public class PollEntity {
     private String type;
     @Column
     private Integer maxSelectionCount;
+    @Column
+    private Date startDate;
+    @Column
+    private Date endDate;
     @Column
     private Integer entryCount;
     @OneToMany(
@@ -52,6 +53,8 @@ public class PollEntity {
         this.users = new HashSet<UserEntity>();
         this.entryCount = 0;
         this.maxSelectionCount = pollDto.getMaxSelectionCount();
+        this.startDate = pollDto.getStartDate();
+        this.endDate = pollDto.getEndDate();
     }
 
     public Long getId() {
@@ -84,6 +87,22 @@ public class PollEntity {
 
     public void setMaxSelectionCount(Integer maxSelectionCount) {
         this.maxSelectionCount = maxSelectionCount;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getEntryCount() {

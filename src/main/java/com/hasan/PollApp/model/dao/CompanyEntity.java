@@ -13,7 +13,7 @@ public class CompanyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(nullable = false, unique = true)
     private String name;
     @Column
     private String description;
@@ -37,6 +37,9 @@ public class CompanyEntity {
     private List<PollEntity> polls;
 
     public CompanyEntity() {
+        this.users = new LinkedList<UserEntity>();
+        this.titles = new HashSet<TitleEntity>();
+        this.polls = new LinkedList<PollEntity>();
     }
 
     public CompanyEntity(CompanyDto companyDto){

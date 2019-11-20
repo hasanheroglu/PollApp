@@ -1,20 +1,15 @@
 package com.hasan.PollApp.service.impl;
 
-import com.hasan.PollApp.model.dao.CompanyEntity;
-import com.hasan.PollApp.model.dao.PollEntity;
-import com.hasan.PollApp.model.dao.TitleEntity;
-import com.hasan.PollApp.model.dao.UserEntity;
+import com.hasan.PollApp.model.dao.*;
 import com.hasan.PollApp.model.dto.CompanyDto;
 import com.hasan.PollApp.model.dto.PollDto;
 import com.hasan.PollApp.model.dto.TitleDto;
 import com.hasan.PollApp.model.dto.UserDto;
-import com.hasan.PollApp.model.repo.CompanyRepository;
-import com.hasan.PollApp.model.repo.PollRepository;
-import com.hasan.PollApp.model.repo.TitleRepository;
-import com.hasan.PollApp.model.repo.UserRepository;
+import com.hasan.PollApp.model.repo.*;
 import com.hasan.PollApp.service.CompanyService;
 import com.hasan.PollApp.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
@@ -30,6 +25,10 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
     @Autowired
     private TitleRepository titleRepository;
+    @Autowired
+    private AccessibilityRepository accessibilityRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Iterable<CompanyEntity> list() {
@@ -119,13 +118,29 @@ public class CompanyServiceImpl implements CompanyService {
     public void addUser(String companyName, UserDto userDto) {
         CompanyEntity company = companyRepository.findByName(companyName);
         UserEntity user = new UserEntity(userDto);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         //if(company == null) { return something bad!}
+
+        AccessibilityEntity email = new AccessibilityEntity("email", user.getEmail());
+        AccessibilityEntity phoneNumber = new AccessibilityEntity("phoneNumber", user.getPhoneNumber());
+
+        accessibilityRepository.save(email);
+        accessibilityRepository.save(phoneNumber);
+
+        user.getAccessibilityOptions().add(email);
+        user.getAccessibilityOptions().add(phoneNumber);
 
         //call user service instead???
         user.setCompany(company);
         user.setCompanyName(company.getName());
         userRepository.save(user);
+
+        email.setUser(user);
+        phoneNumber.setUser(user);
+
+        accessibilityRepository.save(email);
+        accessibilityRepository.save(phoneNumber);
     }
 
     @Override

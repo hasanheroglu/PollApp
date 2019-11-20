@@ -19,7 +19,7 @@ public class UserEntity {
     private Date birthDate;
     @Column
     private String phoneNumber;
-    @Column
+    @Column (nullable = false, unique = true)
     private String email;
     @Column
     private String password;
@@ -27,6 +27,7 @@ public class UserEntity {
     @JoinColumn(name = "company_id")
     @JsonIgnore
     private CompanyEntity company;
+    @Column
     private String companyName;
     @ManyToMany
     @JoinTable(
@@ -38,9 +39,29 @@ public class UserEntity {
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
     private Set<PollEntity> polls;
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<AccessibilityEntity> accessibilityOptions;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private List<RoleEntity> roles;
+    @Column
+    private boolean enabled;
 
 
     public UserEntity() {
+        this.titles = new LinkedList<TitleEntity>();
+        this.polls = new HashSet<PollEntity>();
+        this.accessibilityOptions = new LinkedList<AccessibilityEntity>();
+        this.roles = new LinkedList<RoleEntity>();
     }
 
     public UserEntity(UserDto userDto){
@@ -50,8 +71,12 @@ public class UserEntity {
         this.phoneNumber = userDto.getPhoneNumber();
         this.email = userDto.getEmail();
         this.password = userDto.getPassword();
-        this.titles = new LinkedList<TitleEntity>();
         this.polls = new HashSet<PollEntity>();
+        this.accessibilityOptions = new LinkedList<AccessibilityEntity>();
+        this.roles = userDto.getRoles();
+        this.titles = userDto.getTitles();
+        this.enabled = true;
+
     }
 
     public Long getId() {
@@ -140,5 +165,29 @@ public class UserEntity {
 
     public void setPolls(Set<PollEntity> polls) {
         this.polls = polls;
+    }
+
+    public List<AccessibilityEntity> getAccessibilityOptions() {
+        return accessibilityOptions;
+    }
+
+    public void setAccessibilityOptions(List<AccessibilityEntity> accessibilityOptions) {
+        this.accessibilityOptions = accessibilityOptions;
+    }
+
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

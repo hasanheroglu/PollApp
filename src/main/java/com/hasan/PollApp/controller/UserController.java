@@ -20,6 +20,9 @@ public class UserController {
         return ResponseEntity.ok(userService.get(id));
     }
 
+    @GetMapping
+    public ResponseEntity<?> getByEmail(@RequestParam String email) { return ResponseEntity.ok(userService.getByEmail(email)); }
+
     @PostMapping("/{userId}/titles")
     public ResponseEntity<?> addTitle(@PathVariable ("userId") Long id, @RequestBody TitleDto titleDto){
         userService.addTitle(id, titleDto.getTitle());
