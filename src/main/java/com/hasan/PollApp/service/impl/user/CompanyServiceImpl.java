@@ -38,17 +38,27 @@ public class CompanyServiceImpl implements CompanyService {
     public Operation list() {
         Iterable<CompanyEntity> companies = companyRepository.findAll();
 
-        if(companies.equals(null)){ return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
+        if(companies == null){ return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
 
         return new Operation(OperationStatus.COMPANY_FOUND, companies);
+    }
+
+    @Override
+    public Operation get(String companyName) {
+        CompanyEntity company = companyRepository.findByName(companyName);
+
+        if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
+
+        return new Operation(OperationStatus.COMPANY_FOUND, company);
     }
 
     @Override
     public Operation add(CompanyDto companyDto) {
         CompanyEntity company = new CompanyEntity(companyDto);
 
-        if(companyRepository.save(company).equals(null)){ return new Operation(OperationStatus.COMPANY_NOT_SAVED); }
+        if(companyRepository.findByName(company.getName()) != null){ return new Operation(OperationStatus.COMPANY_EXISTS); }
 
+        companyRepository.save(company);
         return new Operation(OperationStatus.COMPANY_SAVED, company);
     }
 
@@ -72,16 +82,7 @@ public class CompanyServiceImpl implements CompanyService {
         if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
 
         companyRepository.delete(company);
-        return new Operation(OperationStatus.COMPANY_DELETED, company);
-    }
-
-    @Override
-    public Operation get(String companyName) {
-        CompanyEntity company = companyRepository.findByName(companyName);
-
-        if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
-
-        return new Operation(OperationStatus.COMPANY_FOUND, company);
+        return new Operation<>(OperationStatus.COMPANY_DELETED, company);
     }
 
     @Override
@@ -92,16 +93,23 @@ public class CompanyServiceImpl implements CompanyService {
 
         List<UserEntity> users = company.getUsers();
 
-        if(users.isEmpty()) { return new Operation(OperationStatus.COMPANY_USERS_NOT_FOUND); }
-
-        return new Operation(OperationStatus.COMPANY_USERS_FOUND, users);
+        return new Operation<>(OperationStatus.COMPANY_USERS_FOUND, users);
     }
 
     @Override
     public Operation listUsersByTitle(String companyName, String title) {
+        boolean titleFound = false;
         CompanyEntity company = companyRepository.findByName(companyName);
 
         if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
+
+        for(TitleEntity companyTitle: company.getTitles()){
+            if(companyTitle.getTitle().equals(title)){
+                titleFound = true;
+            }
+        }
+
+        if(!titleFound){ return new Operation(OperationStatus.TITLE_NOT_FOUND); }
 
         List<UserEntity> usersWithTitle = new LinkedList<UserEntity>();
         for (UserEntity user: company.getUsers()) {
@@ -112,9 +120,7 @@ public class CompanyServiceImpl implements CompanyService {
             }
         }
 
-        if(usersWithTitle.isEmpty()){ return new Operation(OperationStatus.COMPANY_USERS_NOT_FOUND); }
-
-        return new Operation(OperationStatus.COMPANY_USERS_FOUND, usersWithTitle);
+        return new Operation<>(OperationStatus.COMPANY_USERS_FOUND, usersWithTitle);
     }
 
     @Override
@@ -125,9 +131,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         Set<TitleEntity> titles = company.getTitles();
 
-        if(titles.isEmpty()) { return new Operation(OperationStatus.TITLE_NOT_FOUND); }
-
-        return new Operation(OperationStatus.TITLE_FOUND, titles);
+        return new Operation<>(OperationStatus.TITLE_FOUND, titles);
     }
 
     @Override
@@ -137,11 +141,19 @@ public class CompanyServiceImpl implements CompanyService {
 
         if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
 
-        //call title service instead???
+        for(TitleEntity companyTitle: company.getTitles()){
+            if(companyTitle.getTitle().equals(title.getTitle())){ return new Operation(OperationStatus.TITLE_EXIST); }
+        }
+
         title.setCompany(company);
         titleRepository.save(title);
 
-        return new Operation(OperationStatus.TITLE_ADDED, title);
+        return new Operation<>(OperationStatus.TITLE_ADDED, title);
 
+    }
+
+    @Override
+    public Operation removeTitle(String companyName, String title) {
+        return null;
     }
 }

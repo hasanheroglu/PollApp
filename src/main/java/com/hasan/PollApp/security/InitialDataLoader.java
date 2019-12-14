@@ -59,7 +59,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
             userEntity.setEnabled(true);
             userEntity.setCompanyName(company.getName());
 
-            userRepository.save(userEntity);
+            userEntity = userRepository.save(userEntity);
 
             company.getUsers().add(userEntity);
             companyRepository.save(company);

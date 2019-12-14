@@ -7,12 +7,13 @@ import com.hasan.PollApp.util.Operation;
 
 public interface CompanyService {
     Operation list();
+    Operation get(String companyName);
     Operation add(CompanyDto companyDto);
     Operation remove(String companyName);
-    Operation get(String companyName);
     Operation update(String companyName, CompanyUpdateDto companyUpdateDto);
     Operation listUsers(String companyName);
     Operation listUsersByTitle(String companyName, String title);
     Operation listTitles(String companyName);
     Operation addTitle(String companyName, TitleDto titleDto);
+    Operation removeTitle(String companyName, String title);
 }

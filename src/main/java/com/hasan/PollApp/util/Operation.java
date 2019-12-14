@@ -125,6 +125,11 @@ public class Operation<T> {
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
+            case COMPANY_EXISTS:
+                statusMessage = "Company exists!";
+                wasSuccessful = false;
+                httpStatus = HttpStatus.CONFLICT;
+                break;
             case COMPANY_USERS_NOT_FOUND:
                 statusMessage = "Company user(s) not found!";
                 wasSuccessful = false;
@@ -194,6 +199,11 @@ public class Operation<T> {
                 statusMessage = "Title deleted!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
+                break;
+            case TITLE_EXIST:
+                statusMessage = "User title exist!";
+                wasSuccessful = false;
+                httpStatus = HttpStatus.CONFLICT;
                 break;
             case USER_TITLE_NOT_FOUND:
                 statusMessage = "User title(s) not found!";

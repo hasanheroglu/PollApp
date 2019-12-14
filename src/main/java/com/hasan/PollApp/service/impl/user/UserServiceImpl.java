@@ -58,26 +58,15 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         if(company == null) { return new Operation<>(OperationStatus.COMPANY_NOT_FOUND); }
+        if(userDto.getEmail() == null) { return new Operation<>(OperationStatus.USER_NOT_ADDED); }
+        if(userRepository.findByEmail(user.getEmail()) != null){ return new Operation<>(OperationStatus.USER_NOT_ADDED); }
 
         userRepository.save(user);
+
         addAccessibilityOptions(user);
         addCompany(user, company);
 
         return new Operation<>(OperationStatus.USER_ADDED, user);
-    }
-
-    @Override
-    public Operation remove(String companyName, Long id) {
-        CompanyEntity company = companyRepository.findByName(companyName);
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-
-        if(!optionalUser.isPresent()){ return new Operation<>(OperationStatus.USER_NOT_FOUND); }
-
-        UserEntity user = optionalUser.get();
-
-        company.getUsers().remove(user);
-        companyRepository.save(company);
-        return new Operation<>(OperationStatus.USER_DELETED);
     }
 
     private void addAccessibilityOptions(UserEntity user){
@@ -95,12 +84,28 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-
     private void addCompany(UserEntity user, CompanyEntity company){
         user.setCompany(company);
         user.setCompanyName(company.getName());
         userRepository.save(user);
     }
+
+
+    @Override
+    public Operation remove(String companyName, Long id) {
+        CompanyEntity company = companyRepository.findByName(companyName);
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){ return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+        if(company == null){ return new Operation<>(OperationStatus.COMPANY_NOT_FOUND); }
+
+        UserEntity user = optionalUser.get();
+
+        company.getUsers().remove(user);
+        companyRepository.save(company);
+        return new Operation<>(OperationStatus.USER_DELETED);
+    }
+
 
     @Override
     public Operation addTitle(Long id, String name) {
@@ -113,12 +118,12 @@ public class UserServiceImpl implements UserService {
 
         if(title == null) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
 
-        if(user.getTitles().add(title)){
-            userRepository.save(user);
-            return new Operation<>(OperationStatus.USER_TITLE_ADDED, user);
+        for(TitleEntity userTitle: user.getTitles()){
+            if(userTitle.getTitle().equals(title.getTitle())){ return new Operation<>(OperationStatus.TITLE_EXIST); }
         }
 
-        return new Operation<>(OperationStatus.USER_TITLE_NOT_ADDED);
+        userRepository.save(user);
+        return new Operation<>(OperationStatus.USER_TITLE_ADDED, user);
     }
 
     @Override

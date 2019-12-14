@@ -73,7 +73,7 @@ public class PollServiceImpl implements PollService {
         poll.setEndDate(pollUpdateDto.getEndDate());
         poll = pollRepository.save(poll);
 
-        return new Operation(OperationStatus.POLL_UPDATED, poll);
+        return new Operation<>(OperationStatus.POLL_UPDATED, poll);
     }
 
     //ADD OPERATIONS
@@ -189,7 +189,7 @@ public class PollServiceImpl implements PollService {
         userVote.setVoted(true);
         userVoteRepository.save(userVote);
 
-        return new Operation(OperationStatus.VOTED, voteDto);
+        return new Operation<>(OperationStatus.VOTED, voteDto);
     }
 
     private UserVoteEntity findUserVote(PollEntity poll, UserEntity user){
