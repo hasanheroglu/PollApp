@@ -1,6 +1,6 @@
 package com.hasan.PollApp.security;
 
-import com.hasan.PollApp.model.dao.UserEntity;
+import com.hasan.PollApp.model.dao.user.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

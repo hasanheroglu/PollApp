@@ -1,8 +1,8 @@
 package com.hasan.PollApp.security.jwt;
 
 import com.auth0.jwt.JWT;
-import com.hasan.PollApp.model.dao.UserEntity;
-import com.hasan.PollApp.model.repo.UserRepository;
+import com.hasan.PollApp.model.dao.user.UserEntity;
+import com.hasan.PollApp.model.repo.user.UserRepository;
 import com.hasan.PollApp.security.UserPrincipal;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 

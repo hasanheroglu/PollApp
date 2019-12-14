@@ -2,8 +2,8 @@ package com.hasan.PollApp.security.jwt;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hasan.PollApp.model.dto.LoginDto;
-import com.hasan.PollApp.model.dto.SecurityDto;
+import com.hasan.PollApp.model.dto.user.LoginDto;
+import com.hasan.PollApp.model.dto.user.SecurityDto;
 import com.hasan.PollApp.security.UserPrincipal;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

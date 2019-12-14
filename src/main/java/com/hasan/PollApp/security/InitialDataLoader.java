@@ -1,20 +1,17 @@
 package com.hasan.PollApp.security;
 
-import com.hasan.PollApp.model.dao.CompanyEntity;
-import com.hasan.PollApp.model.dao.RoleEntity;
-import com.hasan.PollApp.model.dao.UserEntity;
-import com.hasan.PollApp.model.repo.CompanyRepository;
-import com.hasan.PollApp.model.repo.RoleRepository;
-import com.hasan.PollApp.model.repo.UserRepository;
+import com.hasan.PollApp.model.dao.user.CompanyEntity;
+import com.hasan.PollApp.model.dao.user.RoleEntity;
+import com.hasan.PollApp.model.dao.user.UserEntity;
+import com.hasan.PollApp.model.repo.user.CompanyRepository;
+import com.hasan.PollApp.model.repo.user.RoleRepository;
+import com.hasan.PollApp.model.repo.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 @Component
@@ -41,28 +38,32 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
         RoleEntity pollOwnerRole = createRoleIfNotFound("ROLE_POLL_OWNER");
         RoleEntity userRole = createRoleIfNotFound("ROLE_USER");
 
-        CompanyEntity company = new CompanyEntity();
-        company.setName("Admin");
+        CompanyEntity company = companyRepository.findByName("Admin");
+        UserEntity user = userRepository.findByEmail("admin@admin.com");
 
-        companyRepository.save(company);
+        if(company == null && user == null){
+            company = new CompanyEntity();
+            company.setName("Admin");
+            companyRepository.save(company);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setName("admin");
-        userEntity.setSurname(" ");
-        userEntity.setEmail("admin@admin.com");
-        userEntity.setCompany(company);
-        userEntity.getRoles().add(systemAdminRole);
-        userEntity.getRoles().add(companyAdminRole);
-        userEntity.getRoles().add(pollOwnerRole);
-        userEntity.getRoles().add(userRole);
-        userEntity.setPassword(passwordEncoder.encode("admin"));
-        userEntity.setEnabled(true);
-        userEntity.setCompanyName(company.getName());
+            UserEntity userEntity = new UserEntity();
+            userEntity.setName("admin");
+            userEntity.setSurname(" ");
+            userEntity.setEmail("admin@admin.com");
+            userEntity.setCompany(company);
+            userEntity.getRoles().add(systemAdminRole);
+            userEntity.getRoles().add(companyAdminRole);
+            userEntity.getRoles().add(pollOwnerRole);
+            userEntity.getRoles().add(userRole);
+            userEntity.setPassword(passwordEncoder.encode("admin"));
+            userEntity.setEnabled(true);
+            userEntity.setCompanyName(company.getName());
 
-        userRepository.save(userEntity);
+            userRepository.save(userEntity);
 
-        company.getUsers().add(userEntity);
-        companyRepository.save(company);
+            company.getUsers().add(userEntity);
+            companyRepository.save(company);
+        }
     }
 
     @Transactional

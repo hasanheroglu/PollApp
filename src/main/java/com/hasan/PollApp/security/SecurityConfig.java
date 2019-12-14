@@ -1,6 +1,6 @@
 package com.hasan.PollApp.security;
 
-import com.hasan.PollApp.model.repo.UserRepository;
+import com.hasan.PollApp.model.repo.user.UserRepository;
 import com.hasan.PollApp.security.jwt.JwtAuthenticationFilter;
 import com.hasan.PollApp.security.jwt.JwtAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
