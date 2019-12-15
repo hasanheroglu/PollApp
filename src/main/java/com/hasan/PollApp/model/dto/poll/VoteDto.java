@@ -1,5 +1,6 @@
 package com.hasan.PollApp.model.dto.poll;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class VoteDto {
@@ -9,6 +10,8 @@ public class VoteDto {
     private List<Integer> votePoints;
 
     public VoteDto() {
+        this.optionIds = new LinkedList<>();
+        this.votePoints = new LinkedList<>();
     }
 
     public VoteDto(Long pollId, Long voterId, List<Long> optionIds, List<Integer> votePoints) {

@@ -1,14 +1,8 @@
 package com.hasan.PollApp.service.impl.user;
 
-import com.hasan.PollApp.model.dao.user.AccessibilityEntity;
-import com.hasan.PollApp.model.dao.user.CompanyEntity;
-import com.hasan.PollApp.model.dao.user.TitleEntity;
-import com.hasan.PollApp.model.dao.user.UserEntity;
+import com.hasan.PollApp.model.dao.user.*;
 import com.hasan.PollApp.model.dto.user.UserDto;
-import com.hasan.PollApp.model.repo.user.AccessibilityRepository;
-import com.hasan.PollApp.model.repo.user.CompanyRepository;
-import com.hasan.PollApp.model.repo.user.TitleRepository;
-import com.hasan.PollApp.model.repo.user.UserRepository;
+import com.hasan.PollApp.model.repo.user.*;
 import com.hasan.PollApp.service.user.UserService;
 import com.hasan.PollApp.util.Operation;
 import com.hasan.PollApp.util.OperationStatus;
@@ -26,6 +20,8 @@ public class UserServiceImpl implements UserService {
     private TitleRepository titleRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private AccessibilityRepository accessibilityRepository;
     @Autowired
@@ -108,15 +104,17 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public Operation addTitle(Long id, String name) {
+    public Operation addTitle(Long id, Long titleId) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
 
         if(!optionalUser.isPresent()) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
 
         UserEntity user = optionalUser.get();
-        TitleEntity title = titleRepository.findByTitle(name);
+        Optional<TitleEntity> optionalTitle = titleRepository.findById(titleId);
 
-        if(title == null) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+        if(!optionalTitle.isPresent()) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+
+        TitleEntity title = optionalTitle.get();
 
         for(TitleEntity userTitle: user.getTitles()){
             if(userTitle.getTitle().equals(title.getTitle())){ return new Operation<>(OperationStatus.TITLE_EXIST); }
@@ -127,15 +125,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Operation removeTitle(Long id, String name) {
+    public Operation removeTitle(Long id, Long titleId) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
 
         if(!optionalUser.isPresent()) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
 
         UserEntity user = optionalUser.get();
-        TitleEntity title = titleRepository.findByTitle(name);
+        Optional<TitleEntity> optionalTitle = titleRepository.findById(titleId);
 
-        if(title == null) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+        if(!optionalTitle.isPresent()) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+
+        TitleEntity title = optionalTitle.get();
 
         if(user.getTitles().remove(title)){
             userRepository.save(user);
@@ -143,5 +143,48 @@ public class UserServiceImpl implements UserService {
         }
 
         return new Operation<>(OperationStatus.USER_TITLE_NOT_DELETED, user);
+    }
+
+    @Override
+    public Operation addRole(Long id, String role) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        UserEntity user = optionalUser.get();
+        RoleEntity roleEntity = roleRepository.findByRole(role);
+
+        if(roleEntity == null){ return new Operation(OperationStatus.ROLE_NOT_FOUND); }
+
+        for(RoleEntity userRole: user.getRoles()){
+            if(userRole.getRole().equals(role)) { return new Operation(OperationStatus.ROLE_EXIST); }
+        }
+
+        user.getRoles().add(roleEntity);
+        userRepository.save(user);
+        roleEntity.getUsers().add(user);
+        roleRepository.save(roleEntity);
+
+
+        return new Operation(OperationStatus.ROLE_ADDED, user);
+    }
+
+    @Override
+    public Operation removeRole(Long id, String role) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        UserEntity user = optionalUser.get();
+        RoleEntity roleEntity = roleRepository.findByRole(role);
+
+        if(roleEntity == null){ return new Operation(OperationStatus.ROLE_NOT_FOUND); }
+
+        if(user.getRoles().remove(roleEntity)){
+            userRepository.save(user);
+            return new Operation(OperationStatus.ROLE_DELETED, user);
+        }
+
+        return new Operation(OperationStatus.ROLE_NOT_DELETED);
     }
 }

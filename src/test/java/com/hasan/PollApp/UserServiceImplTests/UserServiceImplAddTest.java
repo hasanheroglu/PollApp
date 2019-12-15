@@ -103,4 +103,25 @@ public class UserServiceImplAddTest {
         assertThat(operation.getWasSuccessful())
                 .isEqualTo(false);
     }
+
+    @Test
+    public void whenUserExists_thenUserShouldNotBeAdded(){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setEmail("hasanheroglu@gmail.com");
+
+        Mockito.when(userRepository.findByEmail(userEntity.getEmail()))
+                .thenReturn(userEntity);
+
+        UserDto user = new UserDto();
+        user.setName("Hasan");
+        user.setSurname("Eroglu");
+        user.setPassword("123456");
+        user.setPasswordConfirmation("123456");
+        user.setEmail("hasanheroglu@gmail.com");
+        user.setPhoneNumber("05395979754");
+        Operation<UserEntity> operation = userService.add("Votit", user);
+
+        assertThat(operation.getWasSuccessful())
+                .isEqualTo(false);
+    }
 }

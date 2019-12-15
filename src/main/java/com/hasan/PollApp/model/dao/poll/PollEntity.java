@@ -50,6 +50,10 @@ public class PollEntity {
     private List<UserVoteEntity> votes;
 
     public PollEntity() {
+        this.entryCount = 0;
+        this.options = new LinkedList<OptionEntity>();
+        this.users = new HashSet<UserEntity>();
+        this.votes = new LinkedList<UserVoteEntity>();
     }
 
     public PollEntity(PollDto pollDto){

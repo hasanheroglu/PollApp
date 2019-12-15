@@ -15,5 +15,5 @@ public interface CompanyService {
     Operation listUsersByTitle(String companyName, String title);
     Operation listTitles(String companyName);
     Operation addTitle(String companyName, TitleDto titleDto);
-    Operation removeTitle(String companyName, String title);
+    Operation removeTitle(String companyName, Long titleId);
 }

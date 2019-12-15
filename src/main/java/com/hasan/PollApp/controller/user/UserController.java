@@ -23,14 +23,14 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getByEmail(@RequestParam String email) { return Operation.getOperationResult(userService.getByEmail(email)); }
 
-    @PostMapping("/{userId}/titles")
-    public ResponseEntity<?> addTitle(@PathVariable ("userId") Long id, @RequestBody TitleDto titleDto){
-        return Operation.getOperationResult(userService.addTitle(id, titleDto.getTitle()));
+    @PostMapping("/{userId}/titles/")
+    public ResponseEntity<?> addTitle(@PathVariable ("userId") Long id, @RequestParam Long titleId){
+        return Operation.getOperationResult(userService.addTitle(id, titleId));
     }
 
-    @DeleteMapping("/{userId}/titles")
-    public ResponseEntity<?> removeTitle(@PathVariable ("userId") Long id, @RequestBody TitleDto titleDto){
-        return Operation.getOperationResult(userService.removeTitle(id, titleDto.getTitle()));
+    @DeleteMapping("/{userId}/titles/{titleId}")
+    public ResponseEntity<?> removeTitle(@PathVariable ("userId") Long id, @PathVariable Long titleId){
+        return Operation.getOperationResult(userService.removeTitle(id, titleId));
     }
 
 }

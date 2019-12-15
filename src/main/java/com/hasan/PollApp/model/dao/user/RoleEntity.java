@@ -18,7 +18,7 @@ public class RoleEntity {
     private List<UserEntity> users;
 
     public RoleEntity() {
-
+        this.users = new LinkedList<UserEntity>();
     }
 
     public RoleEntity(String name){

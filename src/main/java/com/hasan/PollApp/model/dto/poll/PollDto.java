@@ -1,8 +1,6 @@
 package com.hasan.PollApp.model.dto.poll;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class PollDto {
     private String title;
@@ -16,6 +14,8 @@ public class PollDto {
     private Set<Long> voterIdList;
 
     public PollDto() {
+        this.options = new LinkedList<>();
+        this.voterIdList = new LinkedHashSet<>();
     }
 
     public String getTitle() {

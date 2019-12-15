@@ -10,5 +10,6 @@ public interface PollService {
     Operation get(Long id);
     Operation add(String companyName, PollDto pollDto);
     Operation update(Long id, PollUpdateDto pollUpdateDto);
+    Operation remove(Long id);
     Operation vote(VoteDto voteDto);
 }

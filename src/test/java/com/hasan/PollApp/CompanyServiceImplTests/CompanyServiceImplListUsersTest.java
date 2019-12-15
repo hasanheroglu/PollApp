@@ -18,6 +18,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -25,7 +28,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class CompanyServiceImplListUsersTest {
 
     @TestConfiguration
-    static class UserServiceImplAddTestContextConfiguration {
+    static class CompanyServiceImplListUsersTestContextConfiguration {
 
         @Bean
         public CompanyService companyService() {
@@ -49,10 +52,15 @@ public class CompanyServiceImplListUsersTest {
         UserEntity user_2 = new UserEntity();
         user_2.setEmail("ilmiyepasaoglu@gmail.com");
 
-        TitleEntity title = new TitleEntity();
-        title.setTitle("Manager");
-        company.getTitles().add(title);
-        user_1.getTitles().add(title);
+        TitleEntity title_1 = new TitleEntity();
+        title_1.setTitle("Manager");
+        TitleEntity title_2 = new TitleEntity();
+        title_2.setTitle("Developer");
+        company.getUsers().add(user_1);
+        company.getUsers().add(user_2);
+        company.getTitles().add(title_1);
+        company.getTitles().add(title_2);
+        user_1.getTitles().add(title_1);
 
         Mockito.when(companyRepository.findByName(company.getName()))
                 .thenReturn(company);
@@ -90,6 +98,17 @@ public class CompanyServiceImplListUsersTest {
     }
 
     @Test
+    public void whenValidCompanyNameAndInvalidTitle_thenUsersWithTitleShouldBeFound(){
+        String companyName = "Votit";
+        String title = "Developer";
+
+        Operation operation = companyService.listUsersByTitle(companyName, title);
+
+        assertThat(operation.getOperationObject())
+                .isEqualTo(new LinkedList<>());
+    }
+
+    @Test
     public void whenInvalidCompanyName_thenUsersWithTitleShouldNotBeFound(){
         String companyName = "Apple";
         String title = "Manager";
@@ -103,7 +122,7 @@ public class CompanyServiceImplListUsersTest {
     @Test
     public void whenInvalidTitle_thenUsersWithTitleShouldNotBeFound(){
         String companyName = "Votit";
-        String title = "Developer";
+        String title = "Finance Manager";
 
         Operation operation = companyService.listUsersByTitle(companyName, title);
 

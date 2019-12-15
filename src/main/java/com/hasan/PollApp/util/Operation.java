@@ -95,30 +95,15 @@ public class Operation<T> {
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
-            case COMPANY_NOT_UPDATED:
-                statusMessage = "Company not updated!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
             case COMPANY_UPDATED:
                 statusMessage = "Company updated!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
-            case COMPANY_NOT_SAVED:
-                statusMessage = "Company not saved!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
             case COMPANY_SAVED:
                 statusMessage = "Company saved!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
-                break;
-            case COMPANY_NOT_DELETED:
-                statusMessage = "Company not deleted!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case COMPANY_DELETED:
                 statusMessage = "Company deleted!";
@@ -129,11 +114,6 @@ public class Operation<T> {
                 statusMessage = "Company exists!";
                 wasSuccessful = false;
                 httpStatus = HttpStatus.CONFLICT;
-                break;
-            case COMPANY_USERS_NOT_FOUND:
-                statusMessage = "Company user(s) not found!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case COMPANY_USERS_FOUND:
                 statusMessage = "Company user(s) found!";
@@ -160,11 +140,6 @@ public class Operation<T> {
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
-            case USER_NOT_DELETED:
-                statusMessage = "User not deleted!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
             case USER_DELETED:
                 statusMessage = "User deleted!";
                 wasSuccessful = true;
@@ -179,11 +154,6 @@ public class Operation<T> {
                 statusMessage = "Title(s) found!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
-                break;
-            case TITLE_NOT_ADDED:
-                statusMessage = "Title not added!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case TITLE_ADDED:
                 statusMessage = "Title added!";
@@ -204,21 +174,6 @@ public class Operation<T> {
                 statusMessage = "User title exist!";
                 wasSuccessful = false;
                 httpStatus = HttpStatus.CONFLICT;
-                break;
-            case USER_TITLE_NOT_FOUND:
-                statusMessage = "User title(s) not found!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
-            case USER_TITLE_FOUND:
-                statusMessage = "User title(s) found!";
-                wasSuccessful = true;
-                httpStatus = HttpStatus.OK;
-                break;
-            case USER_TITLE_NOT_ADDED:
-                statusMessage = "User title not added!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
                 break;
             case USER_TITLE_ADDED:
                 statusMessage = "User title added!";
@@ -245,23 +200,18 @@ public class Operation<T> {
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
-            case POLL_NOT_ADDED:
-                statusMessage = "poll not added!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
             case POLL_ADDED:
                 statusMessage = "poll added!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
-            case POLL_NOT_UPDATED:
-                statusMessage = "Poll not updated!";
-                wasSuccessful = false;
-                httpStatus = HttpStatus.BAD_REQUEST;
-                break;
             case POLL_UPDATED:
                 statusMessage = "Poll updated!";
+                wasSuccessful = true;
+                httpStatus = HttpStatus.OK;
+                break;
+            case POLL_DELETED:
+                statusMessage = "Poll deleted!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
                 break;
@@ -269,11 +219,6 @@ public class Operation<T> {
                 statusMessage = "poll option(s) not found!";
                 wasSuccessful = false;
                 httpStatus = HttpStatus.BAD_REQUEST;
-                break;
-            case OPTION_FOUND:
-                statusMessage = "poll option(s) found!";
-                wasSuccessful = true;
-                httpStatus = HttpStatus.OK;
                 break;
             case NOT_VOTED:
                 statusMessage = "Vote failed!";
@@ -290,10 +235,25 @@ public class Operation<T> {
                 wasSuccessful = false;
                 httpStatus = HttpStatus.BAD_REQUEST;
                 break;
-            case ROLE_FOUND:
-                statusMessage = "Role(s) found!";
+            case ROLE_ADDED:
+                statusMessage = "Role added!";
                 wasSuccessful = true;
                 httpStatus = HttpStatus.OK;
+                break;
+            case ROLE_NOT_DELETED:
+                statusMessage = "Role not deleted!";
+                wasSuccessful = false;
+                httpStatus = HttpStatus.BAD_REQUEST;
+                break;
+            case ROLE_DELETED:
+                statusMessage = "Role deleted!";
+                wasSuccessful = true;
+                httpStatus = HttpStatus.OK;
+                break;
+            case ROLE_EXIST:
+                statusMessage = "Role exists!";
+                wasSuccessful = false;
+                httpStatus = HttpStatus.CONFLICT;
                 break;
         }
     }

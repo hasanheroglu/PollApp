@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -153,7 +154,22 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Operation removeTitle(String companyName, String title) {
-        return null;
+    public Operation removeTitle(String companyName, Long titleId) {
+        CompanyEntity company = companyRepository.findByName(companyName);
+
+        if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
+
+        Optional<TitleEntity> optionalTitle = titleRepository.findById(titleId);
+
+        if(!optionalTitle.isPresent()) { return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+
+        TitleEntity title = optionalTitle.get();
+
+        if(company.getTitles().remove(title)){
+            companyRepository.save(company);
+            return new Operation<>(OperationStatus.TITLE_DELETED, company);
+        }
+
+        return new Operation(OperationStatus.TITLE_NOT_DELETED);
     }
 }

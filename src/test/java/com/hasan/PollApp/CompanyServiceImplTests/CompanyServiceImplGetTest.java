@@ -25,7 +25,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class CompanyServiceImplGetTest {
 
     @TestConfiguration
-    static class UserServiceImplAddTestContextConfiguration {
+    static class CompanyServiceImplGetTestContextConfiguration {
 
         @Bean
         public CompanyService companyService() {

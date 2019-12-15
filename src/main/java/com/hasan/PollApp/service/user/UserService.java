@@ -9,6 +9,8 @@ public interface UserService{
     Operation getByEmail(String email);
     Operation add(String companyName, UserDto userDto);
     Operation remove(String companyName, Long id);
-    Operation addTitle(Long id, String name);
-    Operation removeTitle(Long id, String name);
+    Operation addTitle(Long id, Long titleId);
+    Operation removeTitle(Long id, Long titleId);
+    Operation addRole(Long id, String role);
+    Operation removeRole(Long id, String role);
 }

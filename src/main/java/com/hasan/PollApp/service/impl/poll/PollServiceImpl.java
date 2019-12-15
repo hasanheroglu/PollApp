@@ -48,8 +48,6 @@ public class PollServiceImpl implements PollService {
 
         List<PollEntity> polls = company.getPolls();
 
-        if(polls.isEmpty()){ return new Operation<>(OperationStatus.POLL_NOT_FOUND); }
-
         return new Operation<>(OperationStatus.POLL_FOUND, polls);
     }
     @Override
@@ -62,21 +60,8 @@ public class PollServiceImpl implements PollService {
 
         return new Operation<>(OperationStatus.POLL_FOUND, poll);
     }
-    @Override
-    public Operation update(Long id, PollUpdateDto pollUpdateDto) {
-        Optional<PollEntity> optionalPoll = pollRepository.findById(id);
 
-        if(!optionalPoll.isPresent()){ return new Operation(OperationStatus.POLL_NOT_FOUND); }
-
-        PollEntity poll = optionalPoll.get();
-
-        poll.setEndDate(pollUpdateDto.getEndDate());
-        poll = pollRepository.save(poll);
-
-        return new Operation<>(OperationStatus.POLL_UPDATED, poll);
-    }
-
-    //ADD OPERATIONS
+    //MANIPULATION OPERATIONS
 
     @Override
     public Operation add(String companyName, PollDto pollDto) {
@@ -148,6 +133,32 @@ public class PollServiceImpl implements PollService {
         }
     }
 
+    @Override
+    public Operation update(Long id, PollUpdateDto pollUpdateDto) {
+        Optional<PollEntity> optionalPoll = pollRepository.findById(id);
+
+        if(!optionalPoll.isPresent()){ return new Operation(OperationStatus.POLL_NOT_FOUND); }
+
+        PollEntity poll = optionalPoll.get();
+
+        poll.setEndDate(pollUpdateDto.getEndDate());
+        poll = pollRepository.save(poll);
+
+        return new Operation<>(OperationStatus.POLL_UPDATED, poll);
+    }
+
+    @Override
+    public Operation remove(Long id) {
+        Optional<PollEntity> optionalPoll = pollRepository.findById(id);
+
+        if(!optionalPoll.isPresent()){ return new Operation(OperationStatus.POLL_NOT_FOUND); }
+
+        PollEntity poll = optionalPoll.get();
+
+        pollRepository.delete(poll);
+        return new Operation(OperationStatus.POLL_DELETED, poll);
+    }
+
     //VOTE OPERATIONS
 
     @Override
@@ -168,14 +179,15 @@ public class PollServiceImpl implements PollService {
         UserEntity user = optionalUser.get();
 
         UserVoteEntity userVote = findUserVote(poll, user);
-        if(userVote.isVoted()){return new Operation(OperationStatus.NOT_VOTED);}
+        if(userVote == null){ return new Operation(OperationStatus.NOT_VOTED); }
+        if(userVote.isVoted()){ return new Operation(OperationStatus.NOT_VOTED); }
+        if(voteDto.getOptionIds().isEmpty()){ return new Operation(OperationStatus.NOT_VOTED); }
 
         for(Long optionId: voteDto.getOptionIds()){
             Optional<OptionEntity> optionalOption = optionRepository.findById(optionId);
             if(!optionalOption.isPresent()) {return new Operation(OperationStatus.OPTION_NOT_FOUND);}
 
             OptionEntity option = optionalOption.get();
-
 
             poll.setEntryCount(poll.getEntryCount() + voteDto.getVotePoints().get(index));
             option.setCount(option.getCount() + voteDto.getVotePoints().get(index));

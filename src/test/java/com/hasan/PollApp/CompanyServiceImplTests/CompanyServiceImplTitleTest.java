@@ -18,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -25,7 +27,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class CompanyServiceImplTitleTest {
 
     @TestConfiguration
-    static class UserServiceImplAddTestContextConfiguration {
+    static class CompanyServiceImplTitleTestContextConfiguration {
 
         @Bean
         public CompanyService companyService() {
@@ -77,6 +79,7 @@ public class CompanyServiceImplTitleTest {
         CompanyEntity company = new CompanyEntity();
         company.setName("Votit");
         TitleEntity title = new TitleEntity();
+        title.setId(1L);
         title.setTitle("Manager");
         company.getTitles().add(title);
 
@@ -98,6 +101,7 @@ public class CompanyServiceImplTitleTest {
         CompanyEntity company = new CompanyEntity();
         company.setName("Votit");
         TitleEntity title = new TitleEntity();
+        title.setId(1L);
         title.setTitle("Manager");
         company.getTitles().add(title);
 
@@ -119,6 +123,7 @@ public class CompanyServiceImplTitleTest {
         CompanyEntity company = new CompanyEntity();
         company.setName("Votit");
         TitleEntity title = new TitleEntity();
+        title.setId(1L);
         title.setTitle("Manager");
         company.getTitles().add(title);
 
@@ -137,16 +142,103 @@ public class CompanyServiceImplTitleTest {
 
     @Test
     public void whenCompanyExistsAndTitleExists_thenTitleShouldBeRemoved(){
+        CompanyEntity company = new CompanyEntity();
+        company.setName("Votit");
+        TitleEntity title = new TitleEntity();
+        title.setId(1L);
+        title.setTitle("Manager");
+        company.getTitles().add(title);
 
+        Mockito.when(companyRepository.findByName(company.getName()))
+                .thenReturn(company);
+
+        Mockito.when(titleRepository.findById(title.getId()))
+                .thenReturn(Optional.ofNullable(title));
+
+        String companyName = "Votit";
+        Long id = 1L;
+
+        Operation operation = companyService.removeTitle(companyName, id);
+
+        assertThat(operation.getWasSuccessful())
+                .isEqualTo(true);
     }
 
     @Test
     public void whenCompanyDoesNotExist_thenTitleShouldNotBeRemoved(){
+        CompanyEntity company = new CompanyEntity();
+        company.setName("Votit");
+        TitleEntity title = new TitleEntity();
+        title.setId(1L);
+        title.setTitle("Manager");
+        company.getTitles().add(title);
 
+        Mockito.when(companyRepository.findByName(company.getName()))
+                .thenReturn(company);
+
+        Mockito.when(titleRepository.findById(title.getId()))
+                .thenReturn(Optional.ofNullable(title));
+
+        String companyName = "Apple";
+        Long id = 1L;
+
+        Operation operation = companyService.removeTitle(companyName, id);
+
+        assertThat(operation.getWasSuccessful())
+                .isEqualTo(false);
+    }
+
+    @Test
+    public void whenInvalidTitle_thenTitleShouldNotBeRemoved(){
+        CompanyEntity company = new CompanyEntity();
+        company.setName("Votit");
+        TitleEntity title = new TitleEntity();
+        title.setId(2L);
+        title.setTitle("Manager");
+        company.getTitles().add(title);
+
+        Mockito.when(companyRepository.findByName(company.getName()))
+                .thenReturn(company);
+
+        Mockito.when(titleRepository.findById(title.getId()))
+                .thenReturn(Optional.ofNullable(title));
+
+        String companyName = "Votit";
+        Long id = 1L;
+
+        Operation operation = companyService.removeTitle(companyName, id);
+
+        assertThat(operation.getWasSuccessful())
+                .isEqualTo(false);
     }
 
     @Test
     public void whenTitleDoesNotExist_thenTitleShouldNotBeRemoved(){
+        CompanyEntity company = new CompanyEntity();
+        company.setName("Votit");
+        TitleEntity title_1 = new TitleEntity();
+        title_1.setId(1L);
+        title_1.setTitle("Manager");
+        TitleEntity title_2 = new TitleEntity();
+        title_2.setId(2L);
+        title_2.setTitle("Developer");
+        company.getTitles().add(title_1);
 
+        Mockito.when(companyRepository.findByName(company.getName()))
+                .thenReturn(company);
+
+        Mockito.when(titleRepository.findById(title_1.getId()))
+                .thenReturn(Optional.ofNullable(title_1));
+
+        Mockito.when(titleRepository.findById(title_2.getId()))
+                .thenReturn(Optional.ofNullable(title_2));
+
+        String companyName = "Votit";
+        Long id = 2L;
+
+        Operation operation = companyService.removeTitle(companyName, id);
+
+        assertThat(operation.getWasSuccessful())
+                .isEqualTo(false);
     }
 }

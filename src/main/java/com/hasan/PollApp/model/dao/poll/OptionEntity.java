@@ -19,6 +19,7 @@ public class OptionEntity {
     private PollEntity poll;
 
     public OptionEntity() {
+        this.count = 0;
     }
 
     public OptionEntity(String body){
