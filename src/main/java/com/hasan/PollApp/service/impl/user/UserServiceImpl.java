@@ -1,5 +1,6 @@
 package com.hasan.PollApp.service.impl.user;
 
+import com.hasan.PollApp.model.dao.poll.PollEntity;
 import com.hasan.PollApp.model.dao.user.*;
 import com.hasan.PollApp.model.dto.user.UserDto;
 import com.hasan.PollApp.model.repo.user.*;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,6 +48,44 @@ public class UserServiceImpl implements UserService {
         if(user == null) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
 
         return new Operation<>(OperationStatus.USER_FOUND, user);
+    }
+
+    @Override
+    public Operation getVoterPolls(Long id) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){ return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        UserEntity user = optionalUser.get();
+
+        if(user == null) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        return new Operation<>(OperationStatus.POLL_FOUND, user.getPolls());
+    }
+
+    @Override
+    public Operation getOwnedPolls(Long id) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()){ return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        UserEntity user = optionalUser.get();
+
+        if(user == null) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
+
+        CompanyEntity company = companyRepository.findByName(user.getCompanyName());
+
+        if(company == null){ return new Operation<>(OperationStatus.COMPANY_NOT_FOUND); }
+
+        List<PollEntity> ownedPolls = new LinkedList<>();
+
+        for(PollEntity poll: company.getPolls()){
+            if(poll.getOwnerId() == id){
+                ownedPolls.add(poll);
+            }
+        }
+
+        return new Operation<>(OperationStatus.POLL_FOUND, ownedPolls);
     }
 
     @Override

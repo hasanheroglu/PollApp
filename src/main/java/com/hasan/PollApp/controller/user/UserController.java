@@ -23,6 +23,15 @@ public class UserController {
     @GetMapping
     public ResponseEntity<?> getByEmail(@RequestParam String email) { return Operation.getOperationResult(userService.getByEmail(email)); }
 
+    @GetMapping("/{userId}/polls")
+    public ResponseEntity<?> getPolls(@PathVariable("userId") Long id, @RequestParam boolean owned){
+        if(owned){
+            return Operation.getOperationResult(userService.getOwnedPolls(id));
+        }
+
+        return Operation.getOperationResult(userService.getVoterPolls(id));
+    }
+
     @PostMapping("/{userId}/titles/")
     public ResponseEntity<?> addTitle(@PathVariable ("userId") Long id, @RequestParam Long titleId){
         return Operation.getOperationResult(userService.addTitle(id, titleId));

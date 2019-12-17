@@ -169,7 +169,6 @@ public class PollServiceImpl implements PollService {
         PollEntity poll = optionalPoll.get();
         return applyVote(poll, voteDto);
     }
-
     private Operation applyVote(PollEntity poll, VoteDto voteDto){
         int index=0;
 
@@ -203,7 +202,6 @@ public class PollServiceImpl implements PollService {
 
         return new Operation<>(OperationStatus.VOTED, voteDto);
     }
-
     private UserVoteEntity findUserVote(PollEntity poll, UserEntity user){
 
         for(UserVoteEntity userVote: poll.getVotes()){

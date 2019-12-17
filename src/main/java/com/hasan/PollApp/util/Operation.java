@@ -235,6 +235,10 @@ public class Operation<T> {
                 wasSuccessful = false;
                 httpStatus = HttpStatus.BAD_REQUEST;
                 break;
+            case ROLE_FOUND:
+                statusMessage = "Role(s) found!";
+                wasSuccessful = true;
+                httpStatus = HttpStatus.OK;
             case ROLE_ADDED:
                 statusMessage = "Role added!";
                 wasSuccessful = true;

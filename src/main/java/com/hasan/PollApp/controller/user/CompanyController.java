@@ -94,4 +94,10 @@ public class CompanyController {
     public ResponseEntity<?> addTitle(@PathVariable("companyName") String companyName, @RequestBody TitleDto titleDto){
         return Operation.getOperationResult(companyService.addTitle(companyName, titleDto));
     }
+
+    @DeleteMapping("/{companyName}/titles/{titleId}")
+    @PreAuthorize("hasAuthority('ROLE_COMPANY_ADMIN')")
+    public ResponseEntity<?> removeTitle(@PathVariable("companyName") String companyName, @PathVariable("titleId") Long titleId){
+        return Operation.getOperationResult(companyService.removeTitle(companyName, titleId));
+    }
 }

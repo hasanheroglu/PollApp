@@ -35,6 +35,12 @@ public class PollController {
         return Operation.getOperationResult(pollService.update(pollId, pollUpdateDto));
     }
 
+    @DeleteMapping("/polls/{pollId}")
+    @PreAuthorize("hasAuthority('ROLE_POLL_OWNER')")
+    public ResponseEntity<?> remove(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId) {
+        return Operation.getOperationResult(pollService.remove(pollId));
+    }
+
     @GetMapping("/polls/{pollId}")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseEntity<?> get(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId){
@@ -46,4 +52,6 @@ public class PollController {
     public ResponseEntity<?> vote(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId, @RequestBody VoteDto voteDto){
         return Operation.getOperationResult(pollService.vote(voteDto));
     }
+
+
 }
