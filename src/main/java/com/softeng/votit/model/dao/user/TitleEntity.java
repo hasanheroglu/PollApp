@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.softeng.votit.model.dto.user.TitleDto;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -22,10 +23,11 @@ public class TitleEntity {
     private List<UserEntity> users;
 
     public TitleEntity(){
-
+        users = new LinkedList<>();
     }
 
     public TitleEntity(TitleDto titleDto){
+        users = new LinkedList<>();
         this.title = titleDto.getTitle();
     }
 

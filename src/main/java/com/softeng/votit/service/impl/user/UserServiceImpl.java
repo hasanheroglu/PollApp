@@ -1,9 +1,12 @@
 package com.softeng.votit.service.impl.user;
 
 import com.softeng.votit.model.dao.poll.PollEntity;
-import com.hasan.PollApp.model.dao.user.*;
+import com.softeng.votit.model.dao.poll.UserVoteEntity;
+import com.softeng.votit.model.dao.user.*;
 import com.softeng.votit.model.dto.user.UserDto;
-import com.hasan.PollApp.model.repo.user.*;
+import com.softeng.votit.model.repo.poll.PollRepository;
+import com.softeng.votit.model.repo.poll.UserVoteRepository;
+import com.softeng.votit.model.repo.user.*;
 import com.softeng.votit.service.user.UserService;
 import com.softeng.votit.util.Operation;
 import com.softeng.votit.util.OperationStatus;
@@ -28,7 +31,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private PollRepository pollRepository;
+    @Autowired
     private AccessibilityRepository accessibilityRepository;
+    @Autowired
+    private UserVoteRepository userVoteRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -140,9 +147,21 @@ public class UserServiceImpl implements UserService {
 
         UserEntity user = optionalUser.get();
 
+        for(PollEntity poll: user.getPolls()){
+            poll.getUsers().remove(user);
+            for(UserVoteEntity userVote: poll.getVotes()){
+                if(userVote.getUser().equals(user)){
+                    poll.getVotes().remove(userVote);
+                    userVoteRepository.delete(userVote);
+                    break;
+                }
+            }
+        }
+
         company.getUsers().remove(user);
         companyRepository.save(company);
-        return new Operation<>(OperationStatus.USER_DELETED);
+        userRepository.delete(user);
+        return new Operation<>(OperationStatus.USER_DELETED, user);
     }
 
 

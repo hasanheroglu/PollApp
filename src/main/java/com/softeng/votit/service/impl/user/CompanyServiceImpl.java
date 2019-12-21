@@ -11,6 +11,7 @@ import com.softeng.votit.model.repo.user.CompanyRepository;
 import com.softeng.votit.model.repo.user.TitleRepository;
 import com.softeng.votit.model.repo.user.UserRepository;
 import com.softeng.votit.service.user.CompanyService;
+import com.softeng.votit.service.user.UserService;
 import com.softeng.votit.util.Operation;
 import com.softeng.votit.util.OperationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class CompanyServiceImpl implements CompanyService {
     private TitleRepository titleRepository;
     @Autowired
     private AccessibilityRepository accessibilityRepository;
+    @Autowired
+    private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -82,6 +85,12 @@ public class CompanyServiceImpl implements CompanyService {
 
         if(company == null) { return new Operation(OperationStatus.COMPANY_NOT_FOUND); }
 
+        List<UserEntity> users = new LinkedList<>();
+        users.addAll(company.getUsers());
+        for(UserEntity user: users){
+            userService.remove(companyName, user.getId());
+        }
+        users.clear();
         companyRepository.delete(company);
         return new Operation<>(OperationStatus.COMPANY_DELETED, company);
     }
@@ -165,7 +174,15 @@ public class CompanyServiceImpl implements CompanyService {
 
         TitleEntity title = optionalTitle.get();
 
+
         if(company.getTitles().remove(title)){
+
+            if(title.getUsers() == null){ return new Operation<>(OperationStatus.TITLE_NOT_FOUND); }
+            for(UserEntity user: title.getUsers()){
+                user.getTitles().remove(title);
+            }
+
+            titleRepository.delete(title);
             companyRepository.save(company);
             return new Operation<>(OperationStatus.TITLE_DELETED, company);
         }

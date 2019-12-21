@@ -2,6 +2,7 @@ package com.softeng.votit.CompanyServiceImplTests;
 
 import com.softeng.votit.model.dao.user.CompanyEntity;
 import com.softeng.votit.model.dao.user.TitleEntity;
+import com.softeng.votit.model.dao.user.UserEntity;
 import com.softeng.votit.model.dto.user.TitleDto;
 import com.softeng.votit.model.repo.user.CompanyRepository;
 import com.softeng.votit.model.repo.user.TitleRepository;
@@ -144,10 +145,18 @@ public class CompanyServiceImplTitleTest {
     public void whenCompanyExistsAndTitleExists_thenTitleShouldBeRemoved(){
         CompanyEntity company = new CompanyEntity();
         company.setName("Votit");
+
         TitleEntity title = new TitleEntity();
         title.setId(1L);
         title.setTitle("Manager");
+
+        UserEntity user = new UserEntity();
+        user.setName("Hasan");
+        user.setEmail("hasanheroglu@gmail.com");
+
         company.getTitles().add(title);
+        company.getUsers().add(user);
+        title.getUsers().add(user);
 
         Mockito.when(companyRepository.findByName(company.getName()))
                 .thenReturn(company);
