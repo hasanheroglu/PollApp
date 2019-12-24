@@ -23,6 +23,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -62,6 +64,13 @@ public class PollServiceImplVoteTest {
         poll.setTitle("What do you want to eat?");
         poll.setMaxSelectionCount(1);
         poll.setType("Standard");
+        Date startDate = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(startDate);
+        c.add(Calendar.DATE, 1);
+        Date endDate = c.getTime();
+        poll.setStartDate(startDate);
+        poll.setEndDate(endDate);
 
         OptionEntity option_1 = new OptionEntity();
         option_1.setId(1L);

@@ -20,6 +20,7 @@ import com.softeng.votit.util.OperationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,7 +128,7 @@ public class PollServiceImpl implements PollService {
         for(UserEntity user: poll.getUsers()){
             for(AccessibilityEntity accessibilityOption: user.getAccessibilityOptions()){
                 sendNotification(accessibilityOption, "New poll: " + poll.getTitle()  + " Added!", "Dear " + user.getName() + " " + user.getSurname()  + ",\nNew poll added and you are invited to vote. " +
-                        "Using accessibility option now!\n Start Date: " + poll.getStartDate() + "\nEnd Date: " + poll.getEndDate() + "\nPlease do not forget to vote before the end date. https://localhost:3000/companies/"+ poll.getCompany().getName() +"/polls/" + poll.getId()
+                        "\n Start Date: " + poll.getStartDate() + "\nEnd Date: " + poll.getEndDate() + "\nPlease do not forget to vote before the end date. http://localhost:3000/companies/"+ poll.getCompany().getName() +"/polls/" + poll.getId()
                 );
             }
         }
@@ -155,6 +156,10 @@ public class PollServiceImpl implements PollService {
 
         PollEntity poll = optionalPoll.get();
 
+        for(UserVoteEntity userVote: poll.getVotes()){
+            userVoteRepository.delete(userVote);
+        }
+
         pollRepository.delete(poll);
         return new Operation(OperationStatus.POLL_DELETED, poll);
     }
@@ -163,10 +168,18 @@ public class PollServiceImpl implements PollService {
 
     @Override
     public Operation vote(VoteDto voteDto) {
+
         Optional<PollEntity> optionalPoll = pollRepository.findById(voteDto.getPollId());
         if(!optionalPoll.isPresent()) {return new Operation(OperationStatus.POLL_NOT_FOUND);}
 
+
         PollEntity poll = optionalPoll.get();
+        Date currentDate = new Date();
+
+        if(currentDate.after(poll.getEndDate())){
+            return new Operation(OperationStatus.POLL_NOT_FOUND);
+        }
+
         return applyVote(poll, voteDto);
     }
     private Operation applyVote(PollEntity poll, VoteDto voteDto){

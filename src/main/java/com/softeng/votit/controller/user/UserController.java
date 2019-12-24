@@ -31,7 +31,7 @@ public class UserController {
         return Operation.getOperationResult(userService.getVoterPolls(id));
     }
 
-    @PostMapping("/{userId}/titles/")
+    @PostMapping("/{userId}/titles")
     public ResponseEntity<?> addTitle(@PathVariable ("userId") Long id, @RequestParam Long titleId){
         return Operation.getOperationResult(userService.addTitle(id, titleId));
     }
@@ -39,6 +39,16 @@ public class UserController {
     @DeleteMapping("/{userId}/titles/{titleId}")
     public ResponseEntity<?> removeTitle(@PathVariable ("userId") Long id, @PathVariable Long titleId){
         return Operation.getOperationResult(userService.removeTitle(id, titleId));
+    }
+
+    @PostMapping("/{userId}/roles")
+    public ResponseEntity<?> addRole(@PathVariable ("userId") Long id, @RequestParam String role){
+        return Operation.getOperationResult(userService.addRole(id, role));
+    }
+
+    @DeleteMapping("/{userId}/roles")
+    public ResponseEntity<?> removeRole(@PathVariable ("userId") Long id, @RequestParam String role){
+        return Operation.getOperationResult(userService.removeRole(id, role));
     }
 
 }

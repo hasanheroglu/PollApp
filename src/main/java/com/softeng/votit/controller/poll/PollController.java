@@ -36,7 +36,7 @@ public class PollController {
     }
 
     @DeleteMapping("/polls/{pollId}")
-    @PreAuthorize("hasAuthority('ROLE_POLL_OWNER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_SYSTEM_ADMIN', 'ROLE_COMPANY_ADMIN', 'ROLE_POLL_OWNER')")
     public ResponseEntity<?> remove(@PathVariable("companyName") String companyName, @PathVariable("pollId") Long pollId) {
         return Operation.getOperationResult(pollService.remove(pollId));
     }

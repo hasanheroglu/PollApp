@@ -67,8 +67,6 @@ public class UserServiceImpl implements UserService {
 
         UserEntity user = optionalUser.get();
 
-        if(user == null) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
-
         return new Operation<>(OperationStatus.POLL_FOUND, user.getPolls());
     }
 
@@ -79,8 +77,6 @@ public class UserServiceImpl implements UserService {
         if(!optionalUser.isPresent()){ return new Operation<>(OperationStatus.USER_NOT_FOUND); }
 
         UserEntity user = optionalUser.get();
-
-        if(user == null) { return new Operation<>(OperationStatus.USER_NOT_FOUND); }
 
         CompanyEntity company = companyRepository.findByName(user.getCompanyName());
 
@@ -182,6 +178,8 @@ public class UserServiceImpl implements UserService {
             if(userTitle.getTitle().equals(title.getTitle())){ return new Operation<>(OperationStatus.TITLE_EXIST); }
         }
 
+        user.getTitles().add(title);
+        title.getUsers().add(user);
         userRepository.save(user);
         return new Operation<>(OperationStatus.USER_TITLE_ADDED, user);
     }
@@ -228,7 +226,7 @@ public class UserServiceImpl implements UserService {
         roleRepository.save(roleEntity);
 
 
-        return new Operation(OperationStatus.ROLE_ADDED, user);
+        return new Operation<>(OperationStatus.ROLE_ADDED, user);
     }
 
     @Override
@@ -244,7 +242,7 @@ public class UserServiceImpl implements UserService {
 
         if(user.getRoles().remove(roleEntity)){
             userRepository.save(user);
-            return new Operation(OperationStatus.ROLE_DELETED, user);
+            return new Operation<>(OperationStatus.ROLE_DELETED, user);
         }
 
         return new Operation(OperationStatus.ROLE_NOT_DELETED);
